@@ -1,12 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useUser } from "@clerk/nextjs";
-import Header from "@/components/Header"; // Import the Header component
+import { useUser, useAuth  } from "@clerk/nextjs";
+import Header from "@/components/Header";
+
 
 export default function Home() {
   const { isSignedIn } = useUser();
   const [darkMode, setDarkMode] = useState(false);
+  const { signOut } = useAuth();
 
   // Toggle dark mode
   const toggleDarkMode = () => {
@@ -60,10 +62,24 @@ export default function Home() {
                   href="/auth/sign-up"
                   className="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition duration-300 hover:scale-105"
                 >
-                  Sign Up
+                  Create New Account
                 </Link>
               </>
             )}
+
+            {isSignedIn && (
+              <>
+                
+                <button
+                    onClick={() => signOut()}
+                    className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition duration-300 hover:scale-105"
+                  >
+                    Log Out
+                </button>
+                
+              </>
+            )}
+
           </div>
         </div>
       </main>
