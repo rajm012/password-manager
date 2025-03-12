@@ -2,8 +2,9 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { useUser } from "@clerk/nextjs";
-import { FaEye, FaEyeSlash, FaCopy, FaTrash, FaEdit, FaPlus } from "react-icons/fa"; // Icons for actions
+import { FaCopy, FaTrash, FaEdit, FaPlus, FaEye, FaEyeSlash } from "react-icons/fa"; // Icons for actions
 import { useRouter } from "next/navigation"; // For navigation
+import { decryptData } from "@/lib/encryption";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -15,7 +16,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 interface Password {
-  id: string; // Add ID for deletion and editing
+  id: string;
   site_name: string;
   username: string;
   password: string;
@@ -28,7 +29,7 @@ export default function SavedPasswords() {
   const router = useRouter(); // For navigation
 
   const [passwords, setPasswords] = useState<Password[]>([]);
-  const [showPasswords, setShowPasswords] = useState<boolean[]>([]);
+  const [showPasswords, setShowPasswords] = useState<boolean[]>([]); // Track visibility for each password
 
   // Fetch user ID from Supabase
   async function getUserId(clerkId: string): Promise<string | null> {
@@ -40,18 +41,18 @@ export default function SavedPasswords() {
         .single();
 
       if (error) {
-        // console.error("Error fetching user ID:", error);
+        console.error("Error fetching user ID:", error);
         return null;
       }
 
       return data ? data.id : null;
     } catch (error) {
-      // console.error("Unexpected error fetching user ID:", error);
+      console.error("Unexpected error fetching user ID:", error);
       return null;
     }
   }
 
-  // Fetch passwords from Supabase
+  // Fetch and decrypt passwords from Supabase
   useEffect(() => {
     const fetchUserIdAndPasswords = async () => {
       const userId = await getUserId(clerkId);
@@ -63,17 +64,23 @@ export default function SavedPasswords() {
         .eq("userId", userId);
 
       if (error) {
-        // console.error("Error fetching passwords:", error);
+        console.error("Error fetching passwords:", error);
       } else {
-        setPasswords(data as Password[]);
-        setShowPasswords(new Array(data.length).fill(false)); // Initialize show/hide state
+        console.log("Fetched passwords (encrypted):", data);
+        const decryptedPasswords = data.map((pw) => ({
+          ...pw,
+          password: decryptData(pw.password), // Decrypt the password
+        }));
+        console.log("Decrypted passwords:", decryptedPasswords);
+        setPasswords(decryptedPasswords);
+        setShowPasswords(new Array(decryptedPasswords.length).fill(false)); // Initialize visibility state
       }
     };
 
     fetchUserIdAndPasswords();
   }, [clerkId]);
 
-  // Toggle show/hide password for a specific row
+  // Toggle password visibility for a specific row
   const toggleShowPassword = (index: number) => {
     setShowPasswords((prev) => {
       const newState = [...prev];
@@ -128,7 +135,7 @@ export default function SavedPasswords() {
             <tbody>
               {passwords.map((item, index) => (
                 <tr
-                  key={index}
+                  key={item.id}
                   className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-300"
                 >
                   <td className="p-3 text-gray-800 dark:text-white">{item.site_name}</td>
@@ -147,15 +154,15 @@ export default function SavedPasswords() {
                     </div>
                   </td>
                   <td className="p-3 flex space-x-3">
-                      <button
-                        onClick={() => copyPassword(item.password)}
-                        className="text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition duration-300"
-                      >
+                    <button
+                      onClick={() => copyPassword(item.password)}
+                      className="text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition duration-300"
+                    >
                       <FaCopy />
                     </button>
                     <button
-                      onClick={() => router.push(`/dashboard/edit-password/${item.id}`)}
-                      className="text-gray-600 dark:text-gray-300 hover:text-yellow-600 dark:hover:text-yellow-400    transition duration-300"
+                      onClick={() => editPassword(item.id)}
+                      className="text-gray-600 dark:text-gray-300 hover:text-yellow-600 dark:hover:text-yellow-400 transition duration-300"
                     >
                       <FaEdit />
                     </button>

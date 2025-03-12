@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useUser } from "@clerk/nextjs";
+import { encryptData } from "@/lib/encryption"; // Import encryption utility
 
 export default function SavePassword() {
   const { user } = useUser();
@@ -22,10 +23,12 @@ export default function SavePassword() {
     setLoading(true);
 
     try {
+      const encryptedPassword = encryptData(password);
+
       const res = await fetch("/api/save-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, site, username, password }),
+        body: JSON.stringify({ userId, site, username, password: encryptedPassword }),
       });
 
       const data = await res.json();
