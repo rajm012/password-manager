@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     return NextResponse.json(passwords, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { error: "Failed to fetch passwords" },
+      { error: "Failed to fetch passwords", details: error instanceof Error ? error.message : "Unknown error" },
       { status: 500 }
     );
   }

@@ -72,9 +72,16 @@ export default function EditPassword() {
       setTimeout(() => {
         router.push("/dashboard/saved-passwords"); // Redirect to saved passwords page
       }, 1000);
-    } catch (error: any) {
-      setMessage(`❌ Error: ${error.message}`);
-    } finally {
+    } 
+    catch (error: unknown) {
+      if (error instanceof Error) {
+        setMessage(`❌ Error: ${error.message}`);
+      } 
+      else {
+        setMessage("❌ An unknown error occurred.");
+      }
+    } 
+    finally {
       setLoading(false);
     }
   };

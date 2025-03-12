@@ -37,9 +37,16 @@ export default function Dashboard() {
       setSite("");
       setUsername("");
       setPassword("");
-    } catch (error: any) {
-      setMessage(`❌ Error: ${error.message}`);
-    } finally {
+    } 
+    catch (error: unknown) {
+      if (error instanceof Error) {
+        setMessage(`❌ Error: ${error.message}`);
+      } 
+      else {
+        setMessage("❌ An unknown error occurred.");
+      }
+    }
+    finally {
       setLoading(false); // Stop loading
     }
   };

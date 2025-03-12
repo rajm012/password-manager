@@ -10,11 +10,11 @@ export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
   const { signOut } = useAuth();
 
-  // Toggle dark mode
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    localStorage.setItem("darkMode", JSON.stringify(!darkMode)); // Save preference
-  };
+  // // Toggle dark mode
+  // const toggleDarkMode = () => {
+  //   setDarkMode(!darkMode);
+  //   localStorage.setItem("darkMode", JSON.stringify(!darkMode)); // Save preference
+  // };
 
   // Load dark mode preference from localStorage
   useEffect(() => {
