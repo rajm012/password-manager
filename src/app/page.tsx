@@ -40,7 +40,7 @@ export default function Home() {
             {/* Dark Mode Toggle Button */}
             <button 
               onClick={toggleDarkMode}
-              className="p-2 rounded-full bg-gray-300 dark:bg-gray-700 transition duration-300"
+              className="p-2 rounded-full bg-gray-300 dark:bg-gray-700 transition duration-300 hover:scale-110"
             >
               {darkMode ? "🌙" : "☀️"}
             </button>
@@ -60,19 +60,19 @@ export default function Home() {
           <div className="space-x-4">
             <Link
               href="/auth/sign-in"
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition duration-300"
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition duration-300 hover:scale-105"
             >
               Sign In
             </Link>
             <Link
               href="/auth/sign-up"
-              className="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition duration-300"
+              className="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition duration-300 hover:scale-105"
             >
               Sign Up
             </Link>
             <Link
               href="/dashboard"
-              className="bg-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-700 transition duration-300"
+              className="bg-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-700 transition duration-300 hover:scale-105"
             >
               Dashboard
             </Link>

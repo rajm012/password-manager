@@ -48,7 +48,7 @@ export default function SavePassword() {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+    <div className="bg-gradient-to-r from-blue-100 to-purple-100 dark:from-gray-700 dark:to-gray-600 p-6 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
         Save Password
       </h2>
@@ -58,7 +58,7 @@ export default function SavePassword() {
           placeholder="Website Name"
           value={site}
           onChange={(e) => setSite(e.target.value)}
-          className="p-2 border rounded dark:bg-gray-700 dark:text-white"
+          className="p-2 border rounded dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
         <input
@@ -66,7 +66,7 @@ export default function SavePassword() {
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          className="p-2 border rounded dark:bg-gray-700 dark:text-white"
+          className="p-2 border rounded dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
         <input
@@ -74,12 +74,12 @@ export default function SavePassword() {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="p-2 border rounded dark:bg-gray-700 dark:text-white"
+          className="p-2 border rounded dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
         <button
           type="submit"
-          className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-300"
+          className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-300 hover:scale-105"
           disabled={loading}
         >
           {loading ? "Saving..." : "Save Password"}
