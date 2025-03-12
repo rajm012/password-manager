@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getSavedPasswords } from "@/lib/passwordService";
 
 export async function GET(request: Request) {
-  const userId = request.headers.get("userId"); // Replace with actual authentication logic
+  const userId = request.headers.get("userId");
 
   if (!userId) {
     return NextResponse.json(
@@ -12,7 +12,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const passwords = await getSavedPasswords(userId); // Fetch saved passwords for the user
+    const passwords = await getSavedPasswords(userId);
     return NextResponse.json(passwords, { status: 200 });
   } catch (error) {
     return NextResponse.json(

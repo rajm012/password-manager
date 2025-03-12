@@ -48,7 +48,7 @@ export async function POST(req: Request) {
 
     // 3️⃣ Insert password data into `passwords` table using UUID
     const { data, error } = await supabaseAdmin.from("passwords").insert([
-      { user_id: userUUID, site_name: site, username, password },
+      { userId: userUUID, site_name: site, username, password },
     ]);
 
     if (error) {

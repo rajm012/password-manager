@@ -1,22 +1,23 @@
 "use client";
 
 import React, { useState } from "react";
+import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 
 export default function Dashboard() {
+  const { user } = useUser();
+  const userId = user?.id || "";
+  
   const [site, setSite] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const isSignedIn = true; // Replace with actual authentication check
-  const userId = "user-id";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Ensure user is authenticated
-    if (!isSignedIn || !userId) {
+    if (!userId) {
       setMessage("⚠️ You must be logged in to save passwords.");
       return;
     }
@@ -45,7 +46,7 @@ export default function Dashboard() {
         setMessage("❌ An unknown error occurred.");
       }
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
 
@@ -89,9 +90,9 @@ export default function Dashboard() {
 
       {message && <p className="mt-4">{message}</p>}
 
-      <Link href="/">
+      <Link href="/saved-passwords">
         <button className="mt-4 bg-gray-500 text-white px-4 py-2 rounded">
-          Back to Home
+          View Saved Passwords
         </button>
       </Link>
     </div>
