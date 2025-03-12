@@ -2,7 +2,8 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { useUser } from "@clerk/nextjs";
-import { FaEye, FaEyeSlash, FaCopy } from "react-icons/fa"; // Icons for show/hide and copy
+import { FaEye, FaEyeSlash, FaCopy, FaTrash, FaEdit, FaPlus } from "react-icons/fa"; // Icons for actions
+import { useRouter } from "next/navigation"; // For navigation
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -13,10 +14,8 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-console.log("Supabase URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
-console.log("Supabase Anon Key:", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
-
 interface Password {
+  id: string; // Add ID for deletion and editing
   site_name: string;
   username: string;
   password: string;
@@ -26,10 +25,12 @@ interface Password {
 export default function SavedPasswords() {
   const { user } = useUser();
   const clerkId = user?.id || "";
+  const router = useRouter(); // For navigation
 
   const [passwords, setPasswords] = useState<Password[]>([]);
   const [showPasswords, setShowPasswords] = useState<boolean[]>([]);
 
+  // Fetch user ID from Supabase
   async function getUserId(clerkId: string): Promise<string | null> {
     try {
       const { data, error } = await supabase
@@ -37,15 +38,15 @@ export default function SavedPasswords() {
         .select("id")
         .eq("clerk_user_id", clerkId)
         .single();
-  
+
       if (error) {
-        console.error("Error fetching user ID:", error);
+        // console.error("Error fetching user ID:", error);
         return null;
       }
-  
+
       return data ? data.id : null;
     } catch (error) {
-      console.error("Unexpected error fetching user ID:", error);
+      // console.error("Unexpected error fetching user ID:", error);
       return null;
     }
   }
@@ -62,7 +63,7 @@ export default function SavedPasswords() {
         .eq("userId", userId);
 
       if (error) {
-        console.error("Error fetching passwords:", error);
+        // console.error("Error fetching passwords:", error);
       } else {
         setPasswords(data as Password[]);
         setShowPasswords(new Array(data.length).fill(false)); // Initialize show/hide state
@@ -85,6 +86,24 @@ export default function SavedPasswords() {
   const copyPassword = (password: string) => {
     navigator.clipboard.writeText(password);
     alert("Password copied to clipboard!");
+  };
+
+  // Delete a password
+  const deletePassword = async (id: string) => {
+    if (confirm("Are you sure you want to delete this password?")) {
+      const { error } = await supabase.from("passwords").delete().eq("id", id);
+
+      if (error) {
+        console.error("Error deleting password:", error);
+      } else {
+        setPasswords((prev) => prev.filter((pw) => pw.id !== id));
+        alert("Password deleted successfully!");
+      }
+    }
+  };
+
+  const editPassword = (id: string) => {
+    router.push(`/dashboard/edit-password/${id}`);
   };
 
   return (
@@ -127,12 +146,24 @@ export default function SavedPasswords() {
                       </button>
                     </div>
                   </td>
-                  <td className="p-3">
-                    <button
-                      onClick={() => copyPassword(item.password)}
-                      className="text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition duration-300"
-                    >
+                  <td className="p-3 flex space-x-3">
+                      <button
+                        onClick={() => copyPassword(item.password)}
+                        className="text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition duration-300"
+                      >
                       <FaCopy />
+                    </button>
+                    <button
+                      onClick={() => router.push(`/dashboard/edit-password/${item.id}`)}
+                      className="text-gray-600 dark:text-gray-300 hover:text-yellow-600 dark:hover:text-yellow-400    transition duration-300"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => deletePassword(item.id)}
+                      className="text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition duration-300"
+                    >
+                      <FaTrash />
                     </button>
                   </td>
                 </tr>
@@ -141,6 +172,19 @@ export default function SavedPasswords() {
           </table>
         </div>
       )}
+
+      {/* Add Password Button */}
+      <div className="mt-6 flex justify-end">
+        <button
+          onClick={() => router.push("/dashboard/save-password")}
+          className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-300 flex items-center space-x-2"
+        >
+          <FaPlus />
+          <span>Add Password</span>
+        </button>
+      </div>
+
+      {/* Back to Home Button */}
       <div className="mt-6">
         <a
           href="/dashboard"
