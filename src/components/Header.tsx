@@ -41,15 +41,9 @@ export default function Header() {
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="flex items-center space-x-2 focus:outline-none"
               >
-                {user?.profileImageUrl ? (
-                  <img
-                    src={user.profileImageUrl}
-                    alt="Profile"
-                    className="w-8 h-8 rounded-full"
-                  />
-                ) : (
+                {
                   <FaUserCircle className="w-8 h-8 text-gray-600 dark:text-gray-300" />
-                )}
+                }
               </button>
 
               {/* Dropdown Menu */}
