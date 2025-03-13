@@ -1,20 +1,20 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useUser, useAuth  } from "@clerk/nextjs";
+import { useUser, useAuth } from "@clerk/nextjs";
 import Header from "@/components/Header";
-
 
 export default function Home() {
   const { isSignedIn } = useUser();
   const [darkMode, setDarkMode] = useState(false);
   const { signOut } = useAuth();
 
-  // // Toggle dark mode
-  // const toggleDarkMode = () => {
-  //   setDarkMode(!darkMode);
-  //   localStorage.setItem("darkMode", JSON.stringify(!darkMode)); // Save preference
-  // };
+  // Toggle dark mode
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+    localStorage.setItem("darkMode", JSON.stringify(!darkMode));
+  };
 
   // Load dark mode preference from localStorage
   useEffect(() => {
@@ -26,8 +26,16 @@ export default function Home() {
 
   return (
     <div className={`${darkMode ? "bg-gray-900 text-white" : "bg-gradient-to-r from-blue-50 to-purple-50"} min-h-screen flex flex-col transition-all duration-300`}>
-      {/* Use the Header component */}
+      {/* Header */}
       <Header />
+      <div className="absolute top-3 right-4">
+      <button
+              onClick={toggleDarkMode}
+              className="p-2 rounded-full bg-gray-300 dark:bg-gray-700 transition duration-300 hover:scale-110"
+            >
+              {darkMode ? "🌙" : "☀️"}
+            </button>
+      </div>
 
       {/* Hero Section */}
       <main className="flex-grow flex items-center justify-center">
@@ -39,7 +47,6 @@ export default function Home() {
             Secure, fast, and easy-to-use password manager for all your needs.
           </p>
           <div className="space-x-4">
-            {/* Show Dashboard button if logged in */}
             {isSignedIn && (
               <Link
                 href="/dashboard"
@@ -49,7 +56,6 @@ export default function Home() {
               </Link>
             )}
 
-            {/* Show Sign-In and Sign-Up buttons if not logged in */}
             {!isSignedIn && (
               <>
                 <Link
@@ -68,18 +74,13 @@ export default function Home() {
             )}
 
             {isSignedIn && (
-              <>
-                
-                <button
-                    onClick={() => signOut()}
-                    className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition duration-300 hover:scale-105"
-                  >
-                    Log Out
-                </button>
-                
-              </>
+              <button
+                onClick={() => signOut()}
+                className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition duration-300 hover:scale-105"
+              >
+                Log Out
+              </button>
             )}
-
           </div>
         </div>
       </main>

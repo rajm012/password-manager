@@ -166,7 +166,7 @@ If you encounter any issues or have questions, feel free to open an issue on Git
 
 ## **Demo**
 
-Check out the live demo of the project: [https://password-manager-demo.com](https://password-manager-demo.com)
+Check out the live demo of the project: [https://password-manager-012.vercel.app/](https://password-manager-012.vercel.app/)
 
 ---
 

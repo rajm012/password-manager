@@ -48,13 +48,13 @@ export default function Header() {
 
               {/* Dropdown Menu */}
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-lg shadow-lg">
+                <div className="absolute right-0 mt-2 w-54 bg-white dark:bg-gray-700 rounded-lg shadow-lg">
                   <div className="p-4 border-b border-gray-200 dark:border-gray-600">
                     <p className="text-gray-800 dark:text-white">
                       {user?.fullName || "User"}
                     </p>
                     <p className="text-sm text-gray-600 dark:text-gray-300">
-                      {user?.primaryEmailAddress?.emailAddress}
+                      {user?.primaryEmailAddress?.emailAddress.slice(0,11) || "Email"}
                     </p>
                   </div>
                   <button
